@@ -17,6 +17,10 @@ public class Hangman implements KeyListener {
 	JFrame frame;
 	JLabel label;
 	JPanel panel;
+	JLabel l;
+	JLabel used;
+	JLabel space;
+
 	ArrayList<JLabel> c;
 	boolean enable = false;
 	String rounds = JOptionPane.showInputDialog("How many rounds would you like to play?");
@@ -24,16 +28,26 @@ public class Hangman implements KeyListener {
 	ArrayList<String> words = random();
 	int lives;
 	int wordchar;
-	
+	int rn = 1;
+	String ul = "Used letters: ";
+	String ulr = "";
 
 	void setup() {
 		frame = new JFrame();
 		panel = new JPanel();
+		l = new JLabel();
+		used = new JLabel();
+		space = new JLabel();
+		panel.add(l);
+		panel.add(used);
+
+		l.setText("Lives: 10         ");
 		frame.add(panel);
 		frame.setVisible(true);
 		frame.pack();
+		// frame.setSize(500,500);
 		frame.addKeyListener(this);
-		enable=true;
+		enable = true;
 
 	}
 
@@ -75,48 +89,90 @@ public class Hangman implements KeyListener {
 
 		Hangman h = new Hangman();
 		h.setup();
-		
 		h.createWord();
+		for (int i = 0; i < h.r; i++) {
 
+			if (h.rn == h.r) {
+				System.out.println("TEST2");
+				if (h.wordchar == 0) {
+					JOptionPane.showMessageDialog(null, "You win! Out of rounds, goodbye!");
+					System.exit(0);
+				} else if (h.lives == 0) {
+					JOptionPane.showMessageDialog(null, "You lose! You're out of rounds!");
+					System.exit(0);
+				} else {
+					i--;
+				}
+			} else {
+				System.out.println("test");
+				if (h.wordchar == 0) {
+					JOptionPane.showMessageDialog(null, "You win! Let's play again!");
+					h.rn++;
+					h.panel.removeAll();
+					h.panel.add(h.l);
+					h.createWord();
+				} else if (h.lives == 0) {
+					JOptionPane.showMessageDialog(null, "You lose! Let's try again.");
+					h.rn++;
+					h.panel.removeAll();
+					h.panel.add(h.l);
+					h.createWord();
+				} else {
+					i--;
+				}
+			}
+		}
 	}
 
 	public void createWord() {
-		
-		for (int i = 0; i < r; i++) {
-			c = new ArrayList<JLabel>();
 
-			for (int j = 0; j < words.get(i).length(); j++) {
-				c.add(new JLabel());
-				c.get(j).setText("_");
-				panel.add(c.get(j));
-				c.get(j).setVisible(true);
-				frame.pack();
+		c = new ArrayList<JLabel>();
 
-			}
-			lives=10;
-			wordchar=c.size();
+		for (int j = 0; j < words.get(rn - 1).length(); j++) {
+			c.add(new JLabel());
+			c.get(j).setText("_");
+			panel.add(c.get(j));
+			c.get(j).setVisible(true);
+			frame.pack();
 
 		}
+		panel.add(used);
+		used.setText("Used letters:");
+		frame.pack();
+		lives = 10;
+		wordchar = c.size();
+
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-	boolean death = true;
-		if(enable==true) {
-			for (int i = 0; i < words.get(r).length(); i++) {
-				if(e.getKeyChar()==words.get(r).charAt(i)) {
+		boolean death = true;
+		if (enable == true) {
+			for (int i = 0; i < words.get(rn - 1).length(); i++) {
+				if (e.getKeyChar() == words.get(rn - 1).charAt(i)) {
 					wordchar--;
-					death=false;
+					death = false;
+					c.get(i).setText("" + e.getKeyChar());
 				}
-				
+
 			}
 			if (death) {
-				lives--;
+				if (ulr.contains("" + e.getKeyChar())) {
+
+				} else {
+					lives--;
+					l.setText("Lives: " + lives + "         ");
+					String temp = "" + e.getKeyChar() + ", ";
+					ul += temp;
+					ulr += temp;
+					used.setText(ul);
+					frame.pack();
+				}
 			}
-			
+
 		}
-		
+
 	}
 
 	@Override
