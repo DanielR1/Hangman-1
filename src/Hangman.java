@@ -31,6 +31,7 @@ public class Hangman implements KeyListener {
 	int rn = 1;
 	String ul = "Used letters: ";
 	String ulr = "";
+	String rightletters = "";
 
 	void setup() {
 		frame = new JFrame();
@@ -93,32 +94,61 @@ public class Hangman implements KeyListener {
 		for (int i = 0; i < h.r; i++) {
 
 			if (h.rn == h.r) {
-				System.out.println("TEST2");
+				int x = 0;
 				if (h.wordchar == 0) {
 					JOptionPane.showMessageDialog(null, "You win! Out of rounds, goodbye!");
 					System.exit(0);
-				} else if (h.lives == 0) {
-					JOptionPane.showMessageDialog(null, "You lose! You're out of rounds!");
+					x = 1;
+				}
+				if (h.lives == 0) {
+					JOptionPane.showMessageDialog(null,
+							"You lose! The word was " + h.words.get(h.rn - 1) + ". You're out of rounds!");
 					System.exit(0);
-				} else {
+					x = 1;
+				}
+				if (x == 0) {
 					i--;
 				}
 			} else {
-				System.out.println("test");
+				// System.out.println(h.wordchar);
+				int x = 0;
 				if (h.wordchar == 0) {
 					JOptionPane.showMessageDialog(null, "You win! Let's play again!");
 					h.rn++;
 					h.panel.removeAll();
+					h.l.setText("Lives: 10         ");
+					h.used.setText("Used letters:");
 					h.panel.add(h.l);
 					h.createWord();
-				} else if (h.lives == 0) {
-					JOptionPane.showMessageDialog(null, "You lose! Let's try again.");
+					h.panel.add(h.used);
+					h.ul = "Used letters: ";
+					h.ulr = "";
+					h.rightletters = "";
+					x = 11;
+					h.wordchar = h.words.get(h.rn - 1).length();
+				}
+				if (h.lives == 0) {
+
+					JOptionPane.showMessageDialog(null,
+							"You lose! The word was " + h.words.get(h.rn - 1) + ". Let's try again.");
 					h.rn++;
 					h.panel.removeAll();
+					h.l.setText("Lives: 10         ");
+					h.used.setText("Used letters:");
 					h.panel.add(h.l);
 					h.createWord();
-				} else {
+					h.panel.add(h.used);
+					h.wordchar = h.words.get(h.rn - 1).length();
+					h.ul = "Used letters: ";
+					h.ulr = "";
+					h.rightletters = "";
+					x = 11;
+					h.wordchar = h.words.get(h.rn - 1).length();
+				}
+				if (x != 11) {
+
 					i--;
+
 				}
 			}
 		}
@@ -140,27 +170,42 @@ public class Hangman implements KeyListener {
 		used.setText("Used letters:");
 		frame.pack();
 		lives = 10;
-		wordchar = c.size();
+		wordchar = words.get(rn - 1).length();
 
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
 		boolean death = true;
 		if (enable == true) {
-			for (int i = 0; i < words.get(rn - 1).length(); i++) {
-				if (e.getKeyChar() == words.get(rn - 1).charAt(i)) {
-					wordchar--;
-					death = false;
-					c.get(i).setText("" + e.getKeyChar());
+			if (rightletters.contains("" + e.getKeyChar())) {
+
+			} else {
+
+				for (int i = 0; i < words.get(rn - 1).length(); i++) {
+					if (e.getKeyChar() == words.get(rn - 1).charAt(i)) {
+						wordchar--;
+						death = false;
+						c.get(i).setText("" + e.getKeyChar());
+						String temp = "" + e.getKeyChar() + ", ";
+						rightletters += temp;
+
+					}
+
 				}
 
 			}
 			if (death) {
-				if (ulr.contains("" + e.getKeyChar())) {
 
-				} else {
+				if (ulr.contains("" + e.getKeyChar()) == false && rightletters.contains("" + e.getKeyChar()) == false) {
+
 					lives--;
 					l.setText("Lives: " + lives + "         ");
 					String temp = "" + e.getKeyChar() + ", ";
@@ -168,17 +213,11 @@ public class Hangman implements KeyListener {
 					ulr += temp;
 					used.setText(ul);
 					frame.pack();
+
 				}
+
 			}
-
 		}
-
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
