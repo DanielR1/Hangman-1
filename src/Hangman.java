@@ -92,7 +92,8 @@ public class Hangman implements KeyListener {
 		h.setup();
 		h.createWord();
 		for (int i = 0; i < h.r; i++) {
-
+//System.out.println("run");
+//System.out.println(h.words.get(h.rn-1));
 			if (h.rn == h.r) {
 				int x = 0;
 				if (h.wordchar == 0) {
@@ -110,9 +111,10 @@ public class Hangman implements KeyListener {
 					i--;
 				}
 			} else {
-				// System.out.println(h.wordchar);
+				 System.out.println(h.wordchar);
 				int x = 0;
 				if (h.wordchar == 0) {
+					System.out.println("win");
 					JOptionPane.showMessageDialog(null, "You win! Let's play again!");
 					h.rn++;
 					h.panel.removeAll();
@@ -128,7 +130,7 @@ public class Hangman implements KeyListener {
 					h.wordchar = h.words.get(h.rn - 1).length();
 				}
 				if (h.lives == 0) {
-
+//System.out.println("lose");
 					JOptionPane.showMessageDialog(null,
 							"You lose! The word was " + h.words.get(h.rn - 1) + ". Let's try again.");
 					h.rn++;
@@ -183,6 +185,7 @@ public class Hangman implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
+	//	System.out.println(wordchar);
 		boolean death = true;
 		if (enable == true) {
 			if (rightletters.contains("" + e.getKeyChar())) {
